@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Duke Energy Bill</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300..700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+  <style>
+    :root, [data-theme="light"] {
+      --color-bg: #f7f6f2;
+      --color-surface: #f9f8f5;
+      --color-surface-2: #fbfbf9;
+      --color-surface-offset: #f3f0ec;
+      --color-border: #d4d1ca;
+      --color-divider: #dcd9d5;
+      --color-text: #28251d;
+      --color-text-muted: #7a7974;
+      --color-text-faint: #bab9b4;
+      --color-primary: #01696f;
+      --color-primary-hover: #0c4e54;
+      --color-success: #437a22;
+      --color-error: #a12c7b;
+      --color-warning: #964219;
+      --shadow-sm: 0 1px 2px oklch(0.2 0.01 80 / 0.06);
+      --shadow-md: 0 4px 12px oklch(0.2 0.01 80 / 0.08);
+      --radius-md: 0.5rem;
+      --radius-lg: 0.75rem;
+      --radius-xl: 1rem;
+      --space-2: 0.5rem;
+      --space-3: 0.75rem;
+      --space-4: 1rem;
+      --space-6: 1.5rem;
+      --space-8: 2rem;
+      --space-12: 3rem;
+      --text-xs: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);
+      --text-sm: clamp(0.875rem, 0.8rem + 0.35vw, 1rem);
+      --text-base: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+      --text-lg: clamp(1.125rem, 1rem + 0.75vw, 1.5rem);
+      --text-xl: clamp(1.5rem, 1.2rem + 1.25vw, 2.25rem);
+      --font-body: 'Inter', sans-serif;
+      --font-display: 'Instrument Serif', Georgia, serif;
+      --transition-interactive: 180ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    [data-theme="dark"] {
+      --color-bg: #171614;
+      --color-surface: #1c1b19;
+      --color-surface-2: #201f1d;
+      --color-surface-offset: #1d1c1a;
+      --color-border: #393836;
+      --color-divider: #262523;
+      --color-text: #cdccca;
+      --color-text-muted: #797876;
+      --color-text-faint: #5a5957;
+      --color-primary: #4f98a3;
+      --color-primary-hover: #227f8b;
+      --color-success: #6daa45;
+      --color-error: #d163a7;
+      --color-warning: #bb653b;
+      --shadow-sm: 0 1px 2px oklch(0 0 0 / 0.2);
+      --shadow-md: 0 4px 12px oklch(0 0 0 / 0.3);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
+    body {
+      min-height: 100dvh;
+      font-family: var(--font-body);
+      font-size: var(--text-base);
+      color: var(--color-text);
+      background-color: var(--color-bg);
+      line-height: 1.6;
+      padding: var(--space-8) var(--space-4);
+      transition: background var(--transition-interactive), color var(--transition-interactive);
+    }
+    .container { max-width: 860px; margin-inline: auto; }
+
+    /* TOP NAV */
+    .topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: var(--space-8);
+    }
+    .logo {
+      display: flex; align-items: center; gap: var(--space-3);
+      font-family: var(--font-display);
+      font-size: var(--text-lg);
+      color: var(--color-primary);
+      font-weight: 600;
+    }
+    .logo svg { color: var(--color-primary); }
+    .theme-btn {
+      background: var(--color-surface); border: 1px solid var(--color-border);
+      border-radius: var(--radius-md); padding: var(--space-2) var(--space-3);
+      cursor: pointer; color: var(--color-text-muted);
+      transition: background var(--transition-interactive), color var(--transition-interactive);
+    }
+    .theme-btn:hover { background: var(--color-surface-offset); color: var(--color-text); }
+
+    /* BILL CARD */
+    .bill-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-md);
+      overflow: hidden;
+    }
+
+    /* HEADER BAND */
+    .bill-header {
+      background: var(--color-primary);
+      color: #fff;
+      padding: var(--space-6) var(--space-8);
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: var(--space-4);
+      align-items: center;
+    }
+    .bill-header .company { font-size: var(--text-xs); letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.75; margin-bottom: 4px; }
+    .bill-header h1 { font-family: var(--font-display); font-size: var(--text-xl); font-weight: 400; color: #fff; }
+    .bill-header .period { font-size: var(--text-xs); opacity: 0.8; margin-top: 4px; }
+    .due-box {
+      text-align: right;
+    }
+    .due-box .label { font-size: var(--text-xs); opacity: 0.75; text-transform: uppercase; letter-spacing: 0.06em; }
+    .due-box .amount { font-size: var(--text-xl); font-weight: 700; line-height: 1.1; }
+    .due-box .date { font-size: var(--text-xs); opacity: 0.8; margin-top: 2px; }
+
+    /* ACCOUNT INFO STRIP */
+    .account-strip {
+      background: var(--color-surface-offset);
+      border-bottom: 1px solid var(--color-divider);
+      padding: var(--space-4) var(--space-8);
+      display: flex; flex-wrap: wrap; gap: var(--space-6);
+    }
+    .acct-field { }
+    .acct-field .lbl { font-size: var(--text-xs); color: var(--color-text-faint); text-transform: uppercase; letter-spacing: 0.06em; }
+    .acct-field .val { font-size: var(--text-sm); color: var(--color-text); font-weight: 500; margin-top: 2px; }
+
+    /* BODY */
+    .bill-body { padding: var(--space-6) var(--space-8); display: flex; flex-direction: column; gap: var(--space-6); }
+
+    /* SECTION */
+    .section-title {
+      font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.08em;
+      color: var(--color-text-muted); margin-bottom: var(--space-3);
+      padding-bottom: var(--space-2); border-bottom: 1px solid var(--color-divider);
+    }
+
+    /* SUMMARY TABLE */
+    .summary-table { width: 100%; border-collapse: collapse; }
+    .summary-table tr td { padding: var(--space-2) 0; font-size: var(--text-sm); border-bottom: 1px solid oklch(from var(--color-text) l c h / 0.05); }
+    .summary-table tr:last-child td { border-bottom: none; }
+    .summary-table td:last-child { text-align: right; font-variant-numeric: tabular-nums; }
+    .summary-table .subtotal td { color: var(--color-text-muted); }
+    .summary-table .credit td { color: var(--color-success); }
+    .summary-table .total-row td { font-weight: 700; font-size: var(--text-base); color: var(--color-text); padding-top: var(--space-3); border-top: 2px solid var(--color-border); }
+
+    /* CHARGES GRID */
+    .charges-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); }
+    @media (max-width: 600px) { .charges-grid { grid-template-columns: 1fr; } }
+    .charge-block {
+      background: var(--color-surface-2);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-4);
+    }
+    .charge-block .cb-title { font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.07em; color: var(--color-text-muted); margin-bottom: var(--space-3); }
+    .charge-line { display: flex; justify-content: space-between; font-size: var(--text-sm); padding: 3px 0; }
+    .charge-line .cl-label { color: var(--color-text-muted); }
+    .charge-line .cl-val { font-variant-numeric: tabular-nums; color: var(--color-text); }
+    .charge-block-total { display: flex; justify-content: space-between; font-size: var(--text-sm); font-weight: 600; margin-top: var(--space-3); padding-top: var(--space-2); border-top: 1px solid var(--color-divider); color: var(--color-primary); }
+
+    /* USAGE BAR CHART */
+    .usage-chart { display: flex; align-items: flex-end; gap: 6px; height: 80px; }
+    .usage-bar-wrap { display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1; }
+    .usage-bar {
+      width: 100%; background: var(--color-primary);
+      border-radius: 3px 3px 0 0;
+      opacity: 0.3;
+      min-height: 4px;
+      transition: opacity var(--transition-interactive);
+    }
+    .usage-bar.current { opacity: 1; }
+    .usage-bar:hover { opacity: 0.75; cursor: pointer; }
+    .usage-bar-wrap .month { font-size: 9px; color: var(--color-text-faint); letter-spacing: 0.04em; text-transform: uppercase; }
+
+    /* METER */
+    .meter-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-4); }
+    @media (max-width: 500px) { .meter-grid { grid-template-columns: 1fr 1fr; } }
+    .meter-cell {
+      background: var(--color-surface-2);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: var(--space-3);
+    }
+    .meter-cell .mc-lbl { font-size: var(--text-xs); color: var(--color-text-faint); text-transform: uppercase; letter-spacing: 0.06em; }
+    .meter-cell .mc-val { font-size: var(--text-base); font-weight: 600; margin-top: 2px; font-variant-numeric: tabular-nums; }
+
+    /* PAY BUTTON */
+    .pay-section { display: flex; justify-content: flex-end; gap: var(--space-3); flex-wrap: wrap; padding-bottom: var(--space-2); }
+    .btn {
+      padding: var(--space-3) var(--space-6);
+      border-radius: var(--radius-md);
+      font-size: var(--text-sm);
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: background var(--transition-interactive), box-shadow var(--transition-interactive);
+    }
+    .btn-primary { background: var(--color-primary); color: #fff; }
+    .btn-primary:hover { background: var(--color-primary-hover); box-shadow: var(--shadow-sm); }
+    .btn-ghost { background: transparent; color: var(--color-text-muted); border: 1px solid var(--color-border); }
+    .btn-ghost:hover { background: var(--color-surface-offset); color: var(--color-text); }
+
+    /* FOOTER NOTE */
+    .bill-footer {
+      background: var(--color-surface-offset);
+      border-top: 1px solid var(--color-divider);
+      padding: var(--space-4) var(--space-8);
+      font-size: var(--text-xs);
+      color: var(--color-text-faint);
+      display: flex; justify-content: space-between; flex-wrap: wrap; gap: var(--space-2);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- TOP BAR -->
+    <div class="topbar">
+      <div class="logo">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-label="Duke Energy Logo">
+          <circle cx="14" cy="14" r="13" stroke="currentColor" stroke-width="2"/>
+          <path d="M9 8h5c3.866 0 7 2.686 7 6s-3.134 6-7 6H9V8z" fill="currentColor"/>
+          <path d="M9 14h5" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        Duke Energy
+      </div>
+      <button class="theme-btn" data-theme-toggle aria-label="Switch to dark mode">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
+
+    <!-- BILL CARD -->
+    <div class="bill-card">
+      <!-- HEADER -->
+      <div class="bill-header">
+        <div>
+          <div class="company">Duke Energy Progress — North Carolina</div>
+          <h1>Monthly Electric Bill</h1>
+          <div class="period">Service Period: Jun 22 – Jul 21, 2025 &nbsp;|&nbsp; 30 Days</div>
+        </div>
+        <div class="due-box">
+          <div class="label">Total Due</div>
+          <div class="amount">$203.94</div>
+          <div class="date">Due by Aug 10, 2025</div>
+        </div>
+      </div>
+
+      <!-- ACCOUNT STRIP -->
+      <div class="account-strip">
+        <div class="acct-field">
+          <div class="lbl">Account Number</div>
+          <div class="val">9100 9029 1504</div>
+        </div>
+        <div class="acct-field">
+          <div class="lbl">Service Address</div>
+          <div class="val">1234 Maple St, Raleigh, NC 27601</div>
+        </div>
+        <div class="acct-field">
+          <div class="lbl">Rate Code</div>
+          <div class="val">RES-1 (Residential)</div>
+        </div>
+        <div class="acct-field">
+          <div class="lbl">Bill Date</div>
+          <div class="val">Jul 22, 2025</div>
+        </div>
+      </div>
+
+      <!-- BODY -->
+      <div class="bill-body">
+
+        <!-- BILLING SUMMARY -->
+        <div>
+          <div class="section-title">Billing Summary</div>
+          <table class="summary-table">
+            <tr class="subtotal"><td>Previous Balance</td><td>$198.40</td></tr>
+            <tr class="credit"><td>Payment Received — Jul 08</td><td>−$198.40</td></tr>
+            <tr><td style="height:8px"></td><td></td></tr>
+            <tr><td>Current Electric Charges</td><td>$172.56</td></tr>
+            <tr><td>Taxes &amp; Fees</td><td>$31.38</td></tr>
+            <tr class="total-row"><td>Total Amount Due</td><td>$203.94</td></tr>
+          </table>
+        </div>
+
+        <!-- CHARGES DETAIL -->
+        <div>
+          <div class="section-title">Electric Charges Detail</div>
+          <div class="charges-grid">
+            <div class="charge-block">
+              <div class="cb-title">⚡ Energy Charges</div>
+              <div class="charge-line"><span class="cl-label">Customer Charge</span><span class="cl-val">$14.00</span></div>
+              <div class="charge-line"><span class="cl-label">First 750 kWh × 11.09¢</span><span class="cl-val">$83.18</span></div>
+              <div class="charge-line"><span class="cl-label">Over 750 kWh × 14.82¢</span><span class="cl-val">$37.05</span></div>
+              <div class="charge-line"><span class="cl-label">Fuel Cost Rider</span><span class="cl-val">$12.88</span></div>
+              <div class="charge-block-total"><span>Subtotal</span><span>$147.11</span></div>
+            </div>
+            <div class="charge-block">
+              <div class="cb-title">🏛️ Taxes &amp; Fees</div>
+              <div class="charge-line"><span class="cl-label">NC Regulatory Fee</span><span class="cl-val">$3.22</span></div>
+              <div class="charge-line"><span class="cl-label">State Sales Tax (7%)</span><span class="cl-val">$12.05</span></div>
+              <div class="charge-line"><span class="cl-label">County Tax (2%)</span><span class="cl-val">$3.44</span></div>
+              <div class="charge-line"><span class="cl-label">Distribution Rider Adj.</span><span class="cl-val">$25.45</span></div>
+              <div class="charge-line"><span class="cl-label">DSM/Energy Efficiency</span><span class="cl-val">$3.67</span></div>
+              <div class="charge-block-total"><span>Subtotal</span><span>$47.83</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- METER READINGS -->
+        <div>
+          <div class="section-title">Meter Readings</div>
+          <div class="meter-grid">
+            <div class="meter-cell">
+              <div class="mc-lbl">Previous Read</div>
+              <div class="mc-val">14,820 kWh</div>
+            </div>
+            <div class="meter-cell">
+              <div class="mc-lbl">Current Read</div>
+              <div class="mc-val">16,070 kWh</div>
+            </div>
+            <div class="meter-cell">
+              <div class="mc-lbl">Usage This Period</div>
+              <div class="mc-val">1,250 kWh</div>
+            </div>
+            <div class="meter-cell">
+              <div class="mc-lbl">Avg Daily Usage</div>
+              <div class="mc-val">41.7 kWh/day</div>
+            </div>
+            <div class="meter-cell">
+              <div class="mc-lbl">Avg Cost per kWh</div>
+              <div class="mc-val">13.8¢</div>
+            </div>
+            <div class="meter-cell">
+              <div class="mc-lbl">Meter Number</div>
+              <div class="mc-val">00812-7734</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 12-MONTH USAGE CHART -->
+        <div>
+          <div class="section-title">12-Month Usage History (kWh)</div>
+          <div class="usage-chart" id="usageChart"></div>
+        </div>
+
+        <!-- PAY BUTTON -->
+        <div class="pay-section">
+          <button class="btn btn-ghost" onclick="alert('Paperless billing enrolled!')">Go Paperless</button>
+          <button class="btn btn-primary" onclick="alert('Redirecting to duke-energy.com/billing')">Pay Now — $203.94</button>
+        </div>
+
+      </div><!-- /bill-body -->
+
+      <!-- FOOTER -->
+      <div class="bill-footer">
+        <span>Customer Service: 800.452.2777 &nbsp;|&nbsp; duke-energy.com</span>
+        <span>Late fee: $5.00 or 1.5% if paid after Aug 10, 2025</span>
+      </div>
+    </div><!-- /bill-card -->
+  </div><!-- /container -->
+
+  <script>
+    // Dark mode toggle
+    (function(){
+      const t=document.querySelector('[data-theme-toggle]'),r=document.documentElement;
+      let d=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+      r.setAttribute('data-theme',d);
+      if(t) t.addEventListener('click',()=>{
+        d=d==='dark'?'light':'dark';
+        r.setAttribute('data-theme',d);
+        t.setAttribute('aria-label','Switch to '+(d==='dark'?'light':'dark')+' mode');
+        t.innerHTML=d==='dark'
+          ?'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>'
+          :'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+      });
+    })();
+
+    // Usage bar chart
+    const usage = [
+      {m:'Aug',v:980},{m:'Sep',v:860},{m:'Oct',v:710},{m:'Nov',v:620},
+      {m:'Dec',v:590},{m:'Jan',v:640},{m:'Feb',v:670},{m:'Mar',v:710},
+      {m:'Apr',v:780},{m:'May',v:990},{m:'Jun',v:1110},{m:'Jul',v:1250}
+    ];
+    const maxV = Math.max(...usage.map(u=>u.v));
+    const chart = document.getElementById('usageChart');
+    usage.forEach((u,i)=>{
+      const wrap = document.createElement('div');
+      wrap.className='usage-bar-wrap';
+      const bar = document.createElement('div');
+      bar.className='usage-bar'+(i===usage.length-1?' current':'');
+      bar.style.height = (u.v/maxV*72)+'px';
+      bar.title = u.m+': '+u.v+' kWh';
+      const lbl = document.createElement('div');
+      lbl.className='month'; lbl.textContent=u.m;
+      wrap.appendChild(bar); wrap.appendChild(lbl);
+      chart.appendChild(wrap);
+    });
+  </script>
+</body>
+</html>
